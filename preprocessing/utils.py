@@ -56,3 +56,4 @@ def txt_to_df(txt_lst, captions_clm_name="captions"):
     captions_df['sent_order'] = captions_df.index
 
     return captions_df
+

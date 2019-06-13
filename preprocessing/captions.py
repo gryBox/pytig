@@ -1,5 +1,6 @@
 """
 A module for preprocessing text for text to image algorithms. The functions are primarily used for controling the number of captions per image for a text.
+
 """
 import pandas as pd
 import textacy
@@ -138,6 +139,7 @@ class MinimizeDocCaptions():
     """
     Reshapes captions to the desires number allowed by max captions.
     Notes:
+
     """
     def __init__(self, captions_lst, max_captions, normalize_text=True, captions_clm_name="captions"):
 
@@ -190,3 +192,6 @@ class MinimizeDocCaptions():
                 captions_list.append(caption_str)
 
         return captions_list
+
+
+
