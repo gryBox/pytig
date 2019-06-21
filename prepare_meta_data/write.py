@@ -15,39 +15,21 @@ import textacy
 import glob
 import en_core_web_sm
 
-
-RemoteFileMetadata = namedtuple('RemoteFileMetadata',
-                                ['filename', 'url', 'checksum'])
+import prepare_meta_data as pmd
 
 
-def get_data_home(data_home=None):
-    """Return the path of the pytig data dir.
-    This folder is used by some large dataset loaders to avoid downloading the
-    data several times.
-    By default the data dir is set to a folder named 'data' in the
-    user home folder.
+def zip_to_metadata_dir(zip_url, data_dir_path):
+    # Returns a zipped directory
+    zipfile = pmd.read.zip_from_url(zip_url)
 
-    ----------
-    data_home : str | None
-        The path to pytig data dir.
-    """
-    if data_home is None:
-        data_home = os.path.join('~', 'pytig/data') #TODO: Generalize to pytig
-    data_home = os.path.expanduser(data_home)
+    if not os.path.exists(data_dir_path):
+        os.mkdir(data_dir_path)
 
-    if not os.path.exists(data_home):
-        os.makedirs(data_home)
-
-    return data_home
-
-def zip_from_url(file_url):
-    """
-    Get a zipped file from a url
-    """
-    url = requests.get(file_url)
-    zipfile = ZipFile(BytesIO(url.content))
+    # Write zip data to dir for preparing metadat files
+    zipfile.extractall(data_dir_path)
 
     return zipfile
+
 
 def txt_to_corpus(txt_dir):
     """
@@ -62,20 +44,5 @@ def txt_to_corpus(txt_dir):
 
     return imageLabels_corpus
 
-
-def photosynthesis_raw(data_home=None, data_url="https://github.com/gryBox/pytig-data/raw/master/photosynthesis_raw.zip"):
-    """
-    Load raw photosynthesis data that is split into image and text directories. i.e text needs to be processed
-
-    """
-
-    # data_lst = lds.get_url_zip(data_url)
-
-    # # Determine where to put the loaded data.
-    # dataDir_flpth = get_data_home(data_home)
-    pass
-
-
-
-def photosynthesis_lbld():
+def df_to_corpus(df, text_column='text'):
     pass
