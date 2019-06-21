@@ -5,6 +5,7 @@ A module for preprocessing text for text to image algorithms. The functions are 
 import pandas as pd
 import textacy
 import numpy as np
+import os
 import en_core_web_sm
 
 import prepare_data as idp
@@ -34,7 +35,7 @@ class ReshapeImageLabels():
         self.shortestDocCaptions = MaximizeDocCaptions(self.shortestDoc)
 
         # 4  Reshape all the image labels to have the same number of captions while trying maintain an even
-        self.image_label_list = self.shape_text_captions(captionsCorpus, self.shortestDocCaptions.num_of_captions)
+        self.captions_dict = self.shape_text_captions(captionsCorpus, self.shortestDocCaptions.num_of_captions)
 
 
     def shape_text_captions(self, captionsCorpus, max_captions):
@@ -42,8 +43,7 @@ class ReshapeImageLabels():
         Reshape all the image labels to be of the same number of rows, with an attempt keep the number of characters the same for each image.
         TODO: Filter captions by similarity or information or length
         """
-        corpus_captions_lst = list()
-        to_shortDocs_lst = list()
+        captions_dict = dict()
 
         # d. Loop over corpus and re-size labels to the max captions i.e ideally split by sentences
         for docidx, doc in enumerate(captionsCorpus):
@@ -78,9 +78,10 @@ class ReshapeImageLabels():
                 image_captions_lst = minnedCaptions.captions_lst
 
             logging.debug(f"Final Number of captions per image: {len(image_captions_lst)}")
-            corpus_captions_lst.append(image_captions_lst)
+            file_name = os.path.basename(doc._.meta["file_name"])
+            captions_dict[file_name] = image_captions_lst
 
-        return corpus_captions_lst
+        return captions_dict
 
 
 class MaximizeDocCaptions():
@@ -98,7 +99,7 @@ class MaximizeDocCaptions():
     def maximize_captions(self, doc):
 
 
-        captions_lst = list(doc._.to_terms_list(ngrams=(3, 4, 5),
+        captions_lst = list(doc._.to_terms_list(ngrams=(4, 5),
             normalize = 'lower',
             entities=True,
             weighting="binary",
