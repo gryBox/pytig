@@ -19,6 +19,10 @@ import prepare_meta_data as pmd
 
 
 def zip_to_metadata_dir(zip_url, data_dir_path):
+    """
+    Extracts a zipfile to a data directory path.
+    Returns a zipfile object
+    """
     # Returns a zipped directory
     zipfile = pmd.read.zip_from_url(zip_url)
 
