@@ -8,7 +8,8 @@ import numpy as np
 import os
 import en_core_web_sm
 
-import prepare_data as idp
+#import prepare_meta_data as pmd
+import captions as cap
 
 import logging
 
@@ -26,10 +27,10 @@ class ReshapeImageLabels():
         logging.info(f"Input Corpus: {captionsCorpus}")
 
         # 1  Calculate corpus stats
-        self.corpusStats = idp.corpus_stats.CorpusStats(captionsCorpus)
+        self.corpusStats = cap.corpus_stats.CorpusStats(captionsCorpus)
 
         # 2  Extract the shortest doc from a corpus
-        self.shortestDoc = idp.utils.find_shortest_doc(captionsCorpus, self.corpusStats.min_tokens)
+        self.shortestDoc = cap.utils.find_shortest_doc(captionsCorpus, self.corpusStats.min_tokens)
 
         # 3  Maximize the shortest doc captions and return a list of captions greater than entered
         self.shortestDocCaptions = MaximizeDocCaptions(self.shortestDoc)
@@ -97,7 +98,10 @@ class MaximizeDocCaptions():
         logging.info(f"MaximizeDocCaptions - Number of captions {self.num_of_captions}")
 
     def maximize_captions(self, doc):
-
+        """
+        Very rough cut way to split a short text to a numer of captions.
+        Might not be a problem if fixed caption is not a proplem -- henc waiting to solve
+        """
 
         captions_lst = list(doc._.to_terms_list(ngrams=(4, 5),
             normalize = 'lower',
@@ -117,9 +121,9 @@ class MaximizeDocCaptions():
         return len(captions_lst)
 
 
-def normalize_caption_text(text):
+def corpus_to_normed_txt_files(text):
     """
-    Once the captions are chosen, they have to be all normalized for the model i.e so they all look the same
+    Normalizes text for a blob of text and returns a new corpus.
     """
     # input_string_bool = type(text)==str
     # Sprint(f"Is of type string: {input_string_bool}")
@@ -130,7 +134,8 @@ def normalize_caption_text(text):
                                                  no_emails=True,
                                                  no_phone_numbers=True,
                                                  no_numbers=False,
-                                                 no_currency_symbols=False, no_punct=True,
+                                                 no_currency_symbols=False,
+                                                 no_punct=True,
                                                  no_contractions=False,
                                                  no_accents=False)
     return caption
