@@ -3,17 +3,17 @@ Loads datasets to train algorithms and generate images for supported text to ima
 
 
 """
-from collections import namedtuple
-import pandas as pd
-import os
-import shutil
+#from collections import namedtuple
+#import pandas as pd
+#import os
+#import shutil
 import requests
 from io import BytesIO
 from zipfile import ZipFile
-import textacy
+#import textacy
 
-import glob
-import en_core_web_sm
+#import glob
+#import en_core_web_sm
 
 
 

@@ -19,7 +19,7 @@ import en_core_web_sm
 # Load english language model for sents parsing and caption relabeling
 en = en_core_web_sm.load()
 
-from prepare_meta_data import read
+import utils
 
 import logging
 
@@ -33,7 +33,7 @@ def zip_to_metadata_dir(zip_url, data_dir_path):
     Returns a zipfile object
     """
     # Returns a zipped directory
-    zipfile = read.zip_from_url(zip_url)
+    zipfile = utils.read.zip_from_url(zip_url)
 
     # Check if data dir exists
     if not os.path.exists(data_dir_path):
