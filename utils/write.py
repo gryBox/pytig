@@ -77,7 +77,11 @@ def filenames_to_df(image_dir_path, text_dir_path):
                 ignore_invisible=True,
                 recursive=True))
 
+    # Make a df with all the filenames
     filenames_df = pd.DataFrame(file_names_dict)
+    filenames_df['ImagePath'] = image_dir_path
+    filenames_df['TxtPath'] = text_dir_path
+
     return filenames_df
 
 def txt_to_corpus(txt_dir, crps_file_tag='file_name' , txt_extention=".txt"):
