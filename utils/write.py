@@ -19,7 +19,7 @@ import en_core_web_sm
 # Load english language model for sents parsing and caption relabeling
 en = en_core_web_sm.load()
 
-import utils
+from . import read
 
 import logging
 
@@ -33,7 +33,7 @@ def zip_to_metadata_dir(zip_url, data_dir_path):
     Returns a zipfile object
     """
     # Returns a zipped directory
-    zipfile = utils.read.zip_from_url(zip_url)
+    zipfile = read.zip_from_url(zip_url)
 
     # Check if data dir exists
     if not os.path.exists(data_dir_path):
@@ -47,6 +47,38 @@ def zip_to_metadata_dir(zip_url, data_dir_path):
 
     return zipfile
 
+def filenames_to_df(image_dir_path, text_dir_path):
+    """
+    Loads file names from text and image directory
+    """
+    # Informational: Get the name of the function - should be decorator for every function
+    functionNameAsString = sys._getframe().f_code.co_name
+
+    # 1. Define filename col names
+    txtDirName = os.path.basename(text_dir_path)
+    imgDirName = os.path.basename(image_dir_path)
+
+    flnameDir_dict={
+        txtDirName: text_dir_path,
+        imgDirName: image_dir_path
+    }
+    # 2. Load filenames into a pandas data frame for transformation and check
+    logging.info(f"{functionNameAsString} -- Loading Filenames from {flnameDir_dict.keys()} ")
+
+    file_names_dict = dict()
+    for dirName, filepath in flnameDir_dict.items():
+
+        # Only execute if path is a real path
+        if os.path.exists(filepath):
+
+            file_names_dict[dirName] = list(textacy.io.utils.get_filepaths(
+                filepath,
+                extension=None,
+                ignore_invisible=True,
+                recursive=True))
+
+    filenames_df = pd.DataFrame(file_names_dict)
+    return filenames_df
 
 def txt_to_corpus(txt_dir, crps_file_tag='file_name' , txt_extention=".txt"):
     """

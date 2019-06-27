@@ -1,4 +1,7 @@
 import os
+import sys
+
+import pandas as pd
 import textacy
 
 
@@ -12,37 +15,17 @@ logger.setLevel(logging.DEBUG)
 #     Prepares base file names to match between text and image directories
 #     """
 
-def load_filenames(image_dir_path, text_dir_path):
+def check_equal_len(filename1_lst, filename2_lst):
     """
-    Loads file names from text and image directory
+    Input two file name lists and check for diff
+
     """
-    # Check that the image files and text files have the same base name and lowercase
-    # Load files
+    if len(filename1_lst)!=len(filename2_lst):
+        logging.info(f"Error: Number of text files and image files do not match")
 
-    key_names_dict = {
-        os.path.basename(text_dir_path): text_dir_path,
-        os.path.basename(image_dir_path): image_dir_path
-    }
+        return False
+    else:
 
-    # Load filenames into a dict split into text and image file lists
-    file_names_dict = dict()
-
-    for data_name, filepath in  key_names_dict:
-
-        # Only execute
-        if os.path.exists(filepath):
-            file_names_dict[data_name] = textacy.io.utils.get_filepaths(
-                filepath,
-                extension=None,
-                ignore_invisible=True,
-                recursive=True)
-        else:
-            logging.info("The dir:{filepath} does not exist")
-            assert False
+        return True
 
 
-
-
-
-
-    return file_names_dict
