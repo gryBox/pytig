@@ -15,18 +15,37 @@ logger.setLevel(logging.DEBUG)
 #     Prepares base file names to match between text and image directories
 #     """
 
-def check_equal_len(filename1_lst, filename2_lst):
+
+def extract_basename(df, flpthColNms_lst=['images','text']):
+    """Extracts the base file names from the txt and image filepaths to a list"""
+
+    # Stack the text and column images flpth to one column
+    flpths_df = df[flpthColNms_lst].stack()
+    #print(type(flpths_df))
+
+    # extract the basenames for each of the directories
+    baseNm_df = flpths_df.apply(lambda x: os.path.splitext(os.path.basename(x))[0]).unstack()
+
+
+    # # Merge to one column if the basenames are the same
+    error = [1,0]
+    baseNm_series = baseNm_df.apply(lambda x: x.unique()[0] if x.nunique()==1 else error, axis=1)
+
+    return baseNm_series
+
+
+
+
+
+def get_data_basenames(flpth):
     """
-    Input two file name lists and check for diff
-
+    Lowercases the basename for a fileoath
     """
-    if len(filename1_lst)!=len(filename2_lst):
-        logging.info(f"Error: Number of text files and image files do not match")
+    basename = os.path.splitext(os.path.basename(flpth))[0]
 
-        return False
-    else:
+    return basename
 
-        return True
+
 
 
 

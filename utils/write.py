@@ -47,7 +47,7 @@ def zip_to_metadata_dir(zip_url, data_dir_path):
 
     return zipfile
 
-def filenames_to_df(image_dir_path, text_dir_path):
+def filenames_to_df(image_dir_path, text_dir_path, txt_ext=".txt", img_ext=".jpg"):
     """
     Loads file names from text and image directory
     """
@@ -68,17 +68,25 @@ def filenames_to_df(image_dir_path, text_dir_path):
     file_names_dict = dict()
     for dirName, filepath in flnameDir_dict.items():
 
+        if dirName is txtDirName:
+            extension = txt_ext
+        else:
+            extension = img_ext
+
         # Only execute if path is a real path
         if os.path.exists(filepath):
 
-            file_names_dict[dirName] = list(textacy.io.utils.get_filepaths(
+            flNm_lst = list(textacy.io.utils.get_filepaths(
                 filepath,
-                extension=None,
+                extension=extension,
                 ignore_invisible=True,
                 recursive=True))
 
+            flNm_lst.sort()
+            file_names_dict[dirName] = flNm_lst
+
     # Make a df with all the filenames
-    filenames_df = pd.DataFrame(file_names_dict)
+    filenames_df = pd.DataFrame(file_names_dict)#.sort_values(by=list(flnameDir_dict.keys()))
 
 
     return filenames_df
