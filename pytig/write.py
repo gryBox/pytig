@@ -19,7 +19,7 @@ import en_core_web_sm
 # Load english language model for sents parsing and caption relabeling
 en = en_core_web_sm.load()
 
-from . import read
+import read
 
 import logging
 

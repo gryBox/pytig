@@ -9,7 +9,7 @@ import os
 import en_core_web_sm
 
 #import prepare_meta_data as pmd
-import captions as cap
+import pytig as ptg
 
 import logging
 
@@ -27,10 +27,10 @@ class ReshapeImageLabels():
         logging.info(f"Input Corpus: {captionsCorpus}")
 
         # 1  Calculate corpus stats
-        self.corpusStats = cap.corpus_stats.CorpusStats(captionsCorpus)
+        self.corpusStats = ptg.captions.corpus_stats.CorpusStats(captionsCorpus)
 
         # 2  Extract the shortest doc from a corpus
-        self.shortestDoc = cap.utils.find_shortest_doc(captionsCorpus, self.corpusStats.min_tokens)
+        self.shortestDoc = ptg.captions.utils.find_shortest_doc(captionsCorpus, self.corpusStats.min_tokens)
 
         # 3  Maximize the shortest doc captions and return a list of captions greater than entered
         self.shortestDocCaptions = MaximizeDocCaptions(self.shortestDoc)
