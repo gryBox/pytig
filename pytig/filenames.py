@@ -13,6 +13,7 @@ logger.setLevel(logging.DEBUG)
 
 class PrepareFilenames():
     """
+    Load two directories filenames to df
     Extracts filenames for metadata folder
     - renames filenams
     - writes filename.txt to metadata folder
@@ -29,7 +30,11 @@ class PrepareFilenames():
         # Load file names to df from input directories
         self.fileNames_df = write.filenames_to_df(self.image_training_data_flpth, self.text_training_data_flpth)
 
-    def extract_basename(self, df, flpthColNms_lst=['images','text']):
+        # Extract filenames for manipulation
+        self.basenameCol = 'basename'
+        self.fileNames_df[self.basenameCol] = self.extract_basename(self.fileNames_df)
+
+    def extract_filename(self, df, flpthColNms_lst=['images','text']):
         """Extracts the base file names from the txt and image filepaths to a list"""
 
         # Stack the text and column images flpth to one column
@@ -46,15 +51,22 @@ class PrepareFilenames():
         return baseNm_series
 
 
-    def rename(self, flpth):
+    def rename_filenames(self, lowercase=True, write_to_file=False):
         """
-        Lowercases the basename for a fileoath
+        Lowercases the basename for a filepath.
+        TODO: enumerate(?)
         """
-        basename = os.path.splitext(os.path.basename(flpth))[0]
+        if lowercase:
+            baseNm_series = self.fileNames_df[self.basenameCol].str.upper()
 
-        return basename
+        if write_to_file:
+            os.rename()
 
 
+        return baseNm_series
+
+    def filenames_to_txt(self):
+        return
 
 
 

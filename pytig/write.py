@@ -19,7 +19,7 @@ import en_core_web_sm
 # Load english language model for sents parsing and caption relabeling
 en = en_core_web_sm.load()
 
-import read
+from pytig import read
 
 import logging
 
@@ -125,3 +125,5 @@ def df_to_corpus(df, txt_column='RESOURCE'):
     corpus = textacy.Corpus(lang=en, texts=text_stream, metadatas=metadata_stream)
 
     return corpus
+
+
