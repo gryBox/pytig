@@ -68,6 +68,7 @@ def filenames_to_df(image_dir_path, text_dir_path, txt_ext=".txt", img_ext=".jpg
     file_names_dict = dict()
     for dirName, filepath in flnameDir_dict.items():
 
+        # Handle what extentenstions
         if dirName is txtDirName:
             extension = txt_ext
         else:
@@ -125,5 +126,3 @@ def df_to_corpus(df, txt_column='RESOURCE'):
     corpus = textacy.Corpus(lang=en, texts=text_stream, metadatas=metadata_stream)
 
     return corpus
-
-
