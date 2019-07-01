@@ -38,6 +38,9 @@ def zip_to_metadata_dir(zip_url, data_dir_path):
     # Check if data dir exists
     if not os.path.exists(data_dir_path):
         os.mkdir(data_dir_path)
+    else:
+        # Delete metadata folder s-- should always be the top level directory
+        shutil.rmtree(os.path.join(data_dir_path, zipfile.namelist()[0]))
 
     # TODO: (?) Add .gitignore to the data dir immediatly
 

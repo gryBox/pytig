@@ -53,7 +53,7 @@ class PrepareFilenames():
         return baseNm_series
 
 
-    def rename_filenames(self, preprocess_text=True, enumerate_=False, **kwargs):
+    def rename_filenames(self, preprocess_text=True, _enumerate=False, **kwargs):
         """
         Applies textacy text preprocess to each filename with various options.  Enumerates filenames if enumerate_ is true
 
@@ -78,7 +78,7 @@ class PrepareFilenames():
                 no_accents=kwargs.setdefault('no_accents', True)
                 ))
 
-        if enumerate_:
+        if _enumerate:
             self.fileNames_df[self.basenameCol] = self.fileNames_df[self.basenameCol].str.cat(self.fileNames_df.index.values.astype(str), sep="_")
 
 
@@ -92,16 +92,20 @@ class PrepareFilenames():
         filename_df  = pd.melt(self.fileNames_df, id_vars=[self.basenameCol], var_name='filetype', value_name='orig_filepath')
 
         def rename_file(row):
+            #print(row)
 
             # Make new filepath replacing just the filename path
             dir_flpth = os.path.dirname(row['orig_filepath'])
             filename, file_extension = os.path.splitext(row['orig_filepath'])
-            new_filepath = os.path.join(dir_flpth, row[self.basenameCol], file_extension)
+            new_filepath = os.path.join(dir_flpth, f"{row[self.basenameCol]}{ file_extension}")
 
             os.rename(row['orig_filepath'], new_filepath)
 
-        filename_df.apply(lambda row: rename_file, axis=0)
+        # Write the fikenames back to disk with stacked df
+        filename_df.apply(lambda row: rename_file(row), axis=1)
 
+        # reset all the columns to match the filenames on disk
+        self.fileNames_df[self.basenameCol] = self.extract_filenames(self.fileNames_df)
         return
 
     def make_filenames_txtfile(self):
