@@ -1,8 +1,11 @@
 import os
+import argparse
 
 import pandas as pd
+from sklearn.model_selection import train_test_split
 
 from pytig import filenames
+from pytig import write
 
 import logging
 
@@ -65,18 +68,33 @@ class  Metadata():
         self.no_punct=kwargs.setdefault('no_punct', False),
         self.no_contractions=kwargs.setdefault('no_contractions', True),
         self.no_accents=kwargs.setdefault('no_accents', True)
-        ))
 
-        self.preparedFilenames = filenames.PrepareFilenames(self.metadata_flpth,
-        self.image_data_flpth, self.text_data_flpth)
-
-
-        self.preparedFilenames.rename_basename(preprocess_text=self.preprocess_text, _enumerate=self._enumerate, **kwargs)
+        # self.preparedFilenames = filenames.PrepareFilenames(self.metadata_flpth,
+        # self.image_data_flpth, self.text_data_flpth)
 
 
-        preparedFilenames.basenames_to_txt
+        # self.preparedFilenames.rename_basename(preprocess_text=self.preprocess_text, _enumerate=self._enumerate, **kwargs)
+
+
+        #preparedFilenames.basenames_to_txt
 
 
 
-    def split_data(self):
-        pass
+    def split_data(self, filename_df, split_ratio=0.3, filenames_clm='filename'):
+        """
+        Splits filenames between training and cross validation
+        and write to directories test and train
+
+        """
+
+        train_filenames, test_filenames = train_test_split(filename_df[filenames_clm], test_size=0.3)
+
+        logging.info("Number of training data files: {train_filenames.shape}")
+        logging.info("Number of test data files: {test_filenames.shape}")
+
+        # Write filenames as a to train directory and test directory as pickled lists
+        filenames_pickle_nm = "filenames.pickle"
+        write.obj_to_pickle(train_filenames.to_list(), os.path.join(self.metadata_flpth, 'train', filenames_pickle_nm))
+        write.obj_to_pickle(test_filenames.to_list(),  os.path.join(self.metadata_flpth, 'test', filenames_pickle_nm))
+
+        return train_filenames, test_filenames

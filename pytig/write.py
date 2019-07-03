@@ -11,6 +11,7 @@ import requests
 from io import BytesIO
 from zipfile import ZipFile
 import glob
+import pickle
 
 import textacy
 import en_core_web_sm
@@ -129,3 +130,15 @@ def df_to_corpus(df, txt_column='RESOURCE'):
     corpus = textacy.Corpus(lang=en, texts=text_stream, metadatas=metadata_stream)
 
     return corpus
+
+def obj_to_pickle(obj, flpth):
+
+    logging.info(f"Writing pickle file to {flpth}")
+    logging.debug(f"Writing pickle file of file type: {type(obj)}")
+
+    with open(flpth, 'wb') as f:
+        pickle.dump(obj, f)
+
+    return
+
+
