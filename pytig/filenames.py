@@ -18,23 +18,23 @@ class PrepareFilenames():
     - renames filenams
     - writes filename.txt to metadata folder
     """
-    def __init__(self, metadata_flpth, image_training_data_flpth, text_training_data_flpth, **kwargs):
+    def __init__(self, metadata_flpth, image_data_flpth, text_data_flpth, **kwargs):
 
         # File paths to data directories
         self.metadata_flpth = metadata_flpth
 
-        self.image_training_data_flpth = image_training_data_flpth
-        self.text_training_data_flpth = text_training_data_flpth
+        self.image_data_flpth = image_data_flpth
+        self.text_data_flpth = text_data_flpth
 
-        self.txt_dir = os.path.basename(self.text_training_data_flpth)
-        self.img_dir = os.path.basename(self.image_training_data_flpth)
+        self.txt_dir = os.path.basename(self.text_data_flpth)
+        self.img_dir = os.path.basename(self.image_data_flpth)
 
         self.basenameCol = kwargs.setdefault('filename_clmn','filename')
 
         # Load file names to df from input directories (with explit extentions)
         txt_ext = kwargs.setdefault('txt_ext', ".txt")
         img_ext = kwargs.setdefault('img_ext', ".jpg")
-        self.fileNames_df = write.filenames_to_df(self.image_training_data_flpth, self.text_training_data_flpth, txt_ext=txt_ext, img_ext=img_ext)
+        self.fileNames_df = write.filenames_to_df(self.image_data_flpth, self.text_data_flpth, txt_ext=txt_ext, img_ext=img_ext)
 
         # Extract filenames for manipulation and to write the pickle filenames
 
@@ -67,6 +67,7 @@ class PrepareFilenames():
 
         if preprocess_text:
             # Apply textacy
+            # TODO: Move textacy to separate funtion so preprocess can be expanded on
             self.fileNames_df[self.basenameCol] = self.fileNames_df[self.basenameCol].apply(lambda x:
                 textacy.preprocess.preprocess_text(
                 x,
