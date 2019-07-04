@@ -56,18 +56,11 @@ class  Metadata():
         # Prepare filenames and write file basename to filenames.tx
         self.txt_ext = kwargs.setdefault('txt_ext', ".txt")
         self.img_ext = kwargs.setdefault('img_ext', ".jpg")
-        self.preprocess_text = kwargs.setdefault("preprocess_text", True)
-        self._enumerate = kwargs.setdefault("preprocess_text", False)
 
-        self.lowercase=kwargs.setdefault('lowercase', True),
-        self.no_urls=kwargs.setdefault('no_urls', True),
-        self.no_emails=kwargs.setdefault('no_emails', True),
-        self.no_phone_numbers=kwargs.setdefault('no_phone_numbers', True),
-        self.no_numbers=kwargs.setdefault('no_numbers', False),
-        self.no_currency_symbols=kwargs.setdefault('no_currency_symbols', True),
-        self.no_punct=kwargs.setdefault('no_punct', False),
-        self.no_contractions=kwargs.setdefault('no_contractions', True),
-        self.no_accents=kwargs.setdefault('no_accents', True)
+        self.lowercase=kwargs.setdefault('lowercase', True)
+        self.strip = kwargs.setdefault("strip", True)
+        self.replace_blanks = kwargs.setdefault("replace_blanks", True)
+        self._enumerate = kwargs.setdefault("_enumerate", False)
 
         # self.preparedFilenames = filenames.PrepareFilenames(self.metadata_flpth,
         # self.image_data_flpth, self.text_data_flpth)

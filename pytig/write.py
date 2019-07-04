@@ -136,6 +136,9 @@ def obj_to_pickle(obj, flpth):
     logging.info(f"Writing pickle file to {flpth}")
     logging.debug(f"Writing pickle file of file type: {type(obj)}")
 
+    if not os.path.exists(flpth):
+        os.mkdir(os.path.dirname(flpth))
+
     with open(flpth, 'wb') as f:
         pickle.dump(obj, f)
 
