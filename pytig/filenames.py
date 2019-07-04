@@ -55,8 +55,8 @@ class PrepareFilenames():
             # returns a unified basesname column.  Merge to one column if the basenames are the same
             baseNm_df = baseNm_df.apply(lambda x: x.unique()[0] if x.nunique()==1 else 1/0, axis=1)
         except:
-            logging.debug(f"Filenames for images and text dont match")
-            logging.debug(f"Normalizing image and text filenames")
+            logging.debug(f"Filenames for images and text do mot match")
+            logging.debug(f"Normalize image and text filenames")
 
             baseNm_df = baseNm_df.stack()
             baseNm_df= self.normalize_basenames(baseNm_df, lowercase=True, strip=True, replace_blanks=True,  _enumerate=False)
