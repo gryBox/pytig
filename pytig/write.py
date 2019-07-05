@@ -100,23 +100,26 @@ def txt_to_corpus(txt_dir, crps_file_tag='filepaths' , txt_extention=".txt"):
     """
     Reads a text directory and puts in a textacy corpus with the filename as metadata
     """
-    # Directory to get the text files
-    search_dir = f"{txt_dir}/*{txt_extention}"
-
-
     # Get the name of the function - should be decorator for every function
     functionNameAsString = sys._getframe().f_code.co_name
+    logging.debug(f"Function: {functionNameAsString} -- Loading Text from: {txt_dir}")
+
+    # Get a list of files to get text for
+    flpth_gen = textacy.io.utils.get_filepaths(txt_dir,
+                               match_regex=None,
+                               ignore_regex=None,
+                               extension=".txt",
+                               ignore_invisible=True,
+                               recursive=True)
 
 
-
-    logging.debug(f"Function: {functionNameAsString} -- Loading Text from: {search_dir}")
 
     # Initalize spacy corpus using textacy
     imageLabels_corpus = textacy.corpus.Corpus(en)
     doc_stats_df = pd.DataFrame()
     doc_stats_dict = dict()
     # Loop throuh the text directory (input), for all the files ending with .txt
-    for idx, flpth in enumerate(glob.glob(search_dir)):
+    for idx, flpth in enumerate(flpth_gen):
 
         # Add text to corpus
         txt_str = open(flpth).read()
