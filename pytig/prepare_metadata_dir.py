@@ -73,7 +73,7 @@ class  Metadata():
 
 
 
-    def split_data(self, filename_df, split_ratio=0.3, filenames_clm='filename'):
+    def split_data(self, filename_df, test_size=0.3, filenames_clm='filename'):
         """
         Splits filenames between training and cross validation
         and write to directories test and train

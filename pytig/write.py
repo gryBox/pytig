@@ -96,25 +96,52 @@ def filenames_to_df(image_dir_path, text_dir_path, txt_ext=".txt", img_ext=".jpg
 
     return filenames_df
 
-def txt_to_corpus(txt_dir, crps_file_tag='file_name' , txt_extention=".txt"):
+def txt_to_corpus(txt_dir, crps_file_tag='filepaths' , txt_extention=".txt"):
     """
     Reads a text directory and puts in a textacy corpus with the filename as metadata
     """
+    # Directory to get the text files
+    search_dir = f"{txt_dir}/*{txt_extention}"
+
+
     # Get the name of the function - should be decorator for every function
     functionNameAsString = sys._getframe().f_code.co_name
 
 
 
+    logging.debug(f"Function: {functionNameAsString} -- Loading Text from: {search_dir}")
 
     # Initalize spacy corpus using textacy
     imageLabels_corpus = textacy.corpus.Corpus(en)
-
+    doc_stats_df = pd.DataFrame()
+    doc_stats_dict = dict()
     # Loop throuh the text directory (input), for all the files ending with .txt
-    search_dir = f"{txt_dir}/*{txt_extention}"
-    logging.debug(f"Function: {functionNameAsString} -- Loading Text from: {search_dir}")
-    for f in glob.glob(search_dir):
-        txt_str = open(f).read()
-        imageLabels_corpus.add_record((txt_str, {f"{crps_file_tag}": f})  )
+    for idx, flpth in enumerate(glob.glob(search_dir)):
+
+        # Add text to corpus
+        txt_str = open(flpth).read()
+        imageLabels_corpus.add_record(
+            (
+                txt_str,
+                {
+                    f"{crps_file_tag}": flpth,
+                    "filename": os.path.splitext(os.path.basename(flpth))[0]
+                }
+            )
+        )
+
+        # Add doc_stats_df data
+        doc = imageLabels_corpus[idx]
+
+        doc_record = doc._.meta
+
+        ts =  textacy.text_stats.TextStats(doc)
+        doc_record.update(ts.basic_counts)
+
+        doc_stats_df = doc_stats_df.append(doc_record, ignore_index=True)
+
+
+    imageLabels_corpus.doc_stats = doc_stats_df
 
     logging.debug(f"Function: {functionNameAsString} -- Loaded {imageLabels_corpus.n_docs}")
 
