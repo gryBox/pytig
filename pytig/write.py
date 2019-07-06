@@ -10,7 +10,6 @@ import shutil
 import requests
 from io import BytesIO
 from zipfile import ZipFile
-import glob
 import pickle
 
 import textacy
@@ -122,10 +121,15 @@ def txt_to_corpus(txt_dir, crps_file_tag='filepaths' , txt_extention=".txt"):
     for idx, flpth in enumerate(flpth_gen):
 
         # Add text to corpus
-        txt_str = open(flpth).read()
+        txt_str = textacy.io.text.read_text(
+            flpth, mode='rt',
+            encoding=None,
+            lines=False
+            )
+
         imageLabels_corpus.add_record(
             (
-                txt_str,
+                next(txt_str),
                 {
                     f"{crps_file_tag}": flpth,
                     "filename": os.path.splitext(os.path.basename(flpth))[0]
