@@ -48,7 +48,9 @@ def zip_to_metadata_dir(zip_url, data_dir_path):
     # Write zip data to dir for preparing metadat files
     zipfile.extractall(data_dir_path)
 
-    return zipfile
+    logging.debug(zipfile.printdir())
+
+    return
 
 def filenames_to_df(image_dir_path, text_dir_path, txt_ext=".txt", img_ext=".jpg"):
     """
