@@ -5,6 +5,7 @@ TODO: Add max and other stats.  Should this be extended to include those docs?
 from pprint import pformat
 import textacy
 import pandas as pd
+import dask
 # doc extentions are a concept introduced in textacy 0.7.0
 textacy.spacier.doc_extensions.set_doc_extensions()
 
@@ -49,9 +50,7 @@ class CorpusStats:
         min_tokens = max([doc._.n_tokens for doc in corpus])
         return min_tokens
 
-    def calc_doc_stats(self, doc):
-
-        doc_df = pd.DataFrame()
+    def make_stat_record(self, doc):
 
         # Initializes dictionary with doc metadata
         doc_record = doc._.meta
@@ -60,19 +59,22 @@ class CorpusStats:
         ts =  textacy.text_stats.TextStats(doc)
         doc_record.update(ts.basic_counts)
 
-        doc_df = doc_df.append(doc_record, ignore_index=True)
-        return doc_df
+        return pd.DataFrame([doc_record])
 
     def calc_docstats_df(self, crps):
 
         # Get a list of records with doc stats for df
-        docstat_lst = [self.calc_doc_stats(doc) for doc in crps]
+        docstat_lst = [dask.delayed(self.make_stat_record)(doc) for doc in crps]
 
-        # Load into df
-        docstats_df = pd.concat(docstat_lst, axis=0, ignore_index=True)
+        # Load into dask df
+        #dtype_sample_df = pd.DataFrame(docstat_lst[2]).head(0)
+        docstats_dd = dask.dataframe.from_delayed(
+            docstat_lst,
+            # meta=dtype_sample_df
+            )
 
 
-        return docstats_df
+        return docstats_dd
 
 
     def __repr__(self):
