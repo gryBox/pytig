@@ -3,7 +3,7 @@ Loads datasets to train algorithms and generate images for supported text to ima
 
 
 """
-
+import pandas as pd
 import sys
 import os
 import shutil
@@ -11,9 +11,6 @@ import requests
 from io import BytesIO
 from zipfile import ZipFile
 import pickle
-
-import pandas as pd
-import dask
 
 import textacy
 import en_core_web_sm
@@ -100,26 +97,9 @@ def filenames_to_df(image_dir_path, text_dir_path, txt_ext=".txt", img_ext=".jpg
 
     return filenames_df
 
-def txtfile_to_doc(flpth, lang=en):
-    # load txtfile
-    txt_str = next(textacy.io.text.read_text(flpth, mode='rt', encoding=None, lines=False))
-
-    # Make a record (text, metatdata)
-    metadata = {
-        "filepath": flpth,
-        "filename": os.path.splitext(os.path.basename(flpth))[0]
-        }
-
-    record = (txt_str,metadata)
-
-    doc = textacy.doc.make_spacy_doc(record, lang=lang)
-
-    return doc
-
-def txt_to_corpus(txt_dir, lang=en , txt_extention=".txt"):
+def txt_to_corpus(txt_dir, crps_file_tag='filepaths' , txt_extention=".txt"):
     """
     Reads a text directory and puts in a textacy corpus with the filename as metadata
-    and adds a docstats_df
     """
     # Get the name of the function - should be decorator for every function
     functionNameAsString = sys._getframe().f_code.co_name
@@ -133,21 +113,47 @@ def txt_to_corpus(txt_dir, lang=en , txt_extention=".txt"):
                                ignore_invisible=True,
                                recursive=True)
 
+
+
+    # Initalize spacy corpus using textacy
+    imageLabels_corpus = textacy.corpus.Corpus(en)
+    crpsStats = ptg.corpus_stats.CorpusStats()
+    doc_stats_df = pd.DataFrame()
+    # doc_stats_dict = dict()
+
     # Loop throuh the text directory (input), for all the files ending with .txt
-    docs_lst = [dask.delayed(make_doc)(flpth, en) for flpth in flpth_lst]
-    docs = dask.compute(docs_lst)
+    for idx, flpth in enumerate(flpth_gen):
 
-    # Add docs to a spacy corpus
-    crps = textacy.Corpus.add_docs(docs, lang=en)
+        # Load filene
+        txt_str = textacy.io.text.read_text(
+            flpth, mode='rt',
+            encoding=None,
+            lines=False
+            )
 
-    # Calculate stats for each doc in a corpus and make a docstats_df
-    crpsStats = ptg.corpus_stats.CorpusStats(crps)
+        #
 
-    crps.docstats_df = crpsStats.docstats_df
+        imageLabels_corpus.add_record(
+            (
+                next(txt_str),
+                {
+                    f"{crps_file_tag}": flpth,
+                    "filename": os.path.splitext(os.path.basename(flpth))[0]
+                }
+            )
+        )
 
-    logging.debug(f"Function: {functionNameAsString} -- Loaded {crps.n_docs}")
+        doc_df = crpsStats.make_record_df(doc)
 
-    return crps
+
+        doc_stats_df = doc_stats_df.append(doc_df, ignore_index=True)
+
+
+    imageLabels_corpus.doc_stats = doc_stats_df
+
+    logging.debug(f"Function: {functionNameAsString} -- Loaded {imageLabels_corpus.n_docs}")
+
+    return imageLabels_corpus
 
 def df_to_corpus(df, txt_column='RESOURCE'):
     # Load into textacy to delimit sentences

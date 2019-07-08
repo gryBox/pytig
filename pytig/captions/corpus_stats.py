@@ -16,7 +16,7 @@ logger.setLevel(logging.DEBUG)
 
 
 class CorpusStats:
-    def __init__(self, corpus):
+    def __init__(self, corpus=None):
         """
         A minimal set of statistical descriptions needed to maximize_captions.
         TODO:  Add other stats e.g. mean, std
@@ -28,8 +28,15 @@ class CorpusStats:
         # self.min_tokens = self.minTokens(corpus)
         # self.max_tokens = self.maxTokens(corpus)
 
-        self.docstats_df = self.calc_docstats_df(corpus)
-        logger.debug(f"Finished calculating CorpusStats")
+        if corpus is not None:
+            self.docstats_df = self.calc_docstats_df(corpus).compute()
+            #self.describe = self.docstats_df.describe().round()
+            logger.debug(f"Finished calculating CorpusStats")
+        #self.docstats_dd.compute()
+
+
+
+
 
 
 
@@ -50,7 +57,8 @@ class CorpusStats:
         min_tokens = max([doc._.n_tokens for doc in corpus])
         return min_tokens
 
-    def make_stat_record(self, doc):
+    @dask.delayed
+    def make_record_df(self, doc):
 
         # Initializes dictionary with doc metadata
         doc_record = doc._.meta
@@ -64,10 +72,9 @@ class CorpusStats:
     def calc_docstats_df(self, crps):
 
         # Get a list of records with doc stats for df
-        docstat_lst = [dask.delayed(self.make_stat_record)(doc) for doc in crps]
+        docstat_lst = [self.make_record_df(doc) for doc in crps]
 
         # Load into dask df
-        #dtype_sample_df = pd.DataFrame(docstat_lst[2]).head(0)
         docstats_dd = dask.dataframe.from_delayed(
             docstat_lst,
             # meta=dtype_sample_df
