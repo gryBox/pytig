@@ -13,7 +13,7 @@ from zipfile import ZipFile
 import pickle
 
 import pandas as pd
-import dask
+
 
 import textacy
 import en_core_web_sm
@@ -100,7 +100,7 @@ def filenames_to_df(image_dir_path, text_dir_path, txt_ext=".txt", img_ext=".jpg
 
     return filenames_df
 
-def txtfile_to_doc(flpth, lang=en):
+def txt_to_docrec(flpth):
     # load txtfile
     txt_str = next(textacy.io.text.read_text(flpth, mode='rt', encoding=None, lines=False))
 
@@ -110,11 +110,9 @@ def txtfile_to_doc(flpth, lang=en):
         "filename": os.path.splitext(os.path.basename(flpth))[0]
         }
 
-    record = (txt_str,metadata)
+    record = (txt_str, metadata)
 
-    doc = textacy.doc.make_spacy_doc(record, lang=lang)
-
-    return doc
+    return record
 
 def txt_to_corpus(txt_dir, lang=en , txt_extention=".txt"):
     """
@@ -134,11 +132,12 @@ def txt_to_corpus(txt_dir, lang=en , txt_extention=".txt"):
                                recursive=True)
 
     # Loop throuh the text directory (input), for all the files ending with .txt
-    docs_lst = [dask.delayed(make_doc)(flpth, en) for flpth in flpth_lst]
-    docs = dask.compute(docs_lst)
+    #docs_lst = [dask.delayed(txtfile_to_doc)(flpth, en) for flpth in flpth_gen]
+    rec_lst = [txt_to_docrec(flpth) for flpth in flpth_gen]
+    #docs = dask.compute(docs_lst)
 
     # Add docs to a spacy corpus
-    crps = textacy.Corpus.add_docs(docs, lang=en)
+    crps = textacy.Corpus(en, rec_lst)
 
     # Calculate stats for each doc in a corpus and make a docstats_df
     crpsStats = ptg.corpus_stats.CorpusStats(crps)

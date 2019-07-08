@@ -5,6 +5,8 @@ TODO: Add max and other stats.  Should this be extended to include those docs?
 from pprint import pformat
 import textacy
 import pandas as pd
+import dask.dataframe as dd
+from dask.delayed import delayed
 import dask
 # doc extentions are a concept introduced in textacy 0.7.0
 textacy.spacier.doc_extensions.set_doc_extensions()
@@ -75,7 +77,7 @@ class CorpusStats:
         docstat_lst = [self.make_record_df(doc) for doc in crps]
 
         # Load into dask df
-        docstats_dd = dask.dataframe.from_delayed(
+        docstats_dd = dd.from_delayed(
             docstat_lst,
             # meta=dtype_sample_df
             )
