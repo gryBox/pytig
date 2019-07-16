@@ -13,7 +13,9 @@ logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)
 
 
-class  Metadata():
+
+
+class  Metadata(object):
     """
     Purpose: Prepares a metadata directory for the text to image AttnGAN algorithim
 
