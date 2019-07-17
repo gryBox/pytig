@@ -1,7 +1,17 @@
 ## pytig
 
-pytig is a python library to automatically generate images from text with a few commands using open source TIG's (text to image generation) algorithms.
+pytig is a python library to prepare inputs for text to image generator algorithms.  Specifically for the [AttnGAN: Fine-Grained Text to Image Generation
+with Attentional Generative Adversarial Networks](http://openaccess.thecvf.com/content_cvpr_2018/papers/Xu_AttnGAN_Fine-Grained_Text_CVPR_2018_paper.pdf).
 
+### What fork
+The authors implementation [AttnGAN algorithm](https://github.com/taoxugit/AttnGAN) is
+###
+
+###
+
+### Limitations
+
+    - Loading captions for analysis is relatively slow.  Primarily due to
     import pytig as tig
 
     tig.download.datasets(name=['bird'])

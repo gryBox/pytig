@@ -12,11 +12,11 @@ logger = logging.getLogger()
 logger.setLevel(logging.DEBUG)
 
 def parse_args():
-    parser = argparse.ArgumentParser(description='Normalize, split (training, eval), and other filename metadata preperations for the AttnGAN algorithim')
+    parser = argparse.ArgumentParser(description='Normalize, split (training, eval), and other filename preperations for the AttnGAN algorithim')
     parser.add_argument('--cfg', dest='cfg_file',
                         help='optional config file',
                         default='cfg/bird_attn2.yml', type=str)
-    parser.add_argument('--gpu', dest='gpu_id', type=int, default=-1)
+    parser.add_argument('--metadata_flpth', dest='gpu_id', type=str)
     parser.add_argument('--data_dir', default='')
     parser.add_argument('--output_dir', default='')
     parser.add_argument('--manualSeed', type=int, help='manual seed', default=123)
