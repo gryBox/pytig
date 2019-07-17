@@ -1,114 +1,52 @@
 ## pytig
 
 pytig is a python library to prepare inputs for text to image generator algorithms.  Specifically for the [AttnGAN: Fine-Grained Text to Image Generation
-with Attentional Generative Adversarial Networks](http://openaccess.thecvf.com/content_cvpr_2018/papers/Xu_AttnGAN_Fine-Grained_Text_CVPR_2018_paper.pdf).
+with Attentional Generative Adversarial Networks](http://openaccess.thecvf.com/content_cvpr_2018/papers/Xu_AttnGAN_Fine-Grained_Text_CVPR_2018_paper.pdf) algorithm. (Tao Xu, Pengchuan Zhang, Qiuyuan Huang, Han Zhang, Zhe Gan, Xiaolei Huang, Xiaodong He)
 
-### What fork
-The authors implementation [AttnGAN algorithm](https://github.com/taoxugit/AttnGAN) is
+### pytig use cases
+1. Prepare novel datasets and metadata folder required by the AttnGAN algorithm.
+2. Prepare filenames and explore captions i.e. text associated with the images
+
+
+### AttnGAN Implementations
+1. `python 2.7` The authors implementation [AttnGAN algorithm](https://github.com/taoxugit/AttnGAN)
+2. `python 3.6` Fork by [davidstap](https://github.com/davidstap/AttnGAN)
+3. `python 3.6` Fork by [gryBox](https://github.com/gryBox/AttnGAN). Can be run with or without`guild`.
 ###
 
-###
-
-### Limitations
-
-    - Loading captions for analysis is relatively slow.  Primarily due to
-    import pytig as tig
-
-    tig.download.datasets(name=['bird'])
-    Bird = tig.generate("photosythnesis is a process", model='bird' )
-    Bird.img.show()
-
-   ![alt text](example_bird.PNG)
-
-Traditionally TIG's are often developed by researchers, hoping to be published.  Once a paper is published, the algorithms are no longer maintained. Making it difficult for hobbyists, other researchers and engineers to replicate, experiment, and implement in production.
-
-## Things you need to know before you install
-1. Greater tham 4 GB of disk space for all the training data and various models.
-2. python 3.6+
-3. Time and patience.  It all depends on your machine but in general things run in minutes and hours not seconds.
-
-
-
-
-
-TThe library facilates generating images fro text  using text to image generation algorithms (TIG's) developed by resea
-
-
-
-
-
-
-Programmatically generating images from text is a powerful concept with many practical applications in numerous fields such as education, engineering, game making. However in practice using these algorithms to generate images can be difficult i.e. [AttnGAN: Fine-Grained Text to Image Generation
-with Attentional Generative Adversarial Networks](http://openaccess.thecvf.com/content_cvpr_2018/papers/Xu_AttnGAN_Fine-Grained_Text_CVPR_2018_paper.pdf). The primary reasons are (1) Reseaserchers often write the code for the lab algorithms are written by researchers
 
 ## Usage
 `pip install pytig`
 
     import pytig as tig
 
-    #test
-    # No GPU required
-    img = tig.generate("photosythnesis is a process", model='test' )
+    # Prepare MetaData folder for attngan model
+    # Inputs
+    data_dir_name = 'data'
 
-    #bird
-    #coco
+    metadata_folder_name = 'photosynthesis_raw'
+    txt_dir_flname =  "text"
+    img_dir_flname =  'images
 
-
-
-
-### What pytig does.
-- Accept text as an input and return an image based on a tig maintained library with three inputs.
-    (1) predict text
-    (2) algorithm
-    (3) Process type i.e. CPU or GPU
-- Automate and Log model runs of tig maintained models.
-- Help in preparing training data for new models.  A model is a trained object that when fed text can generate an image for that text.
-        #### Example 1:
-        A model trained on the cub data set (birds)
-- Share amd reproduce algorithms
-
-### What tig does not do.
-- Supply the compute resources.
-
-
-## Major Dependancies
-pytig is dependant on large packages for preprocessing text, training and predicting images i.e. guild, spacy, textacy, pandas, pytorch
-
-### Terminology
-- algorithm - A set of rules and processes which output a model
-- model - The algorithm's output which is used to generate the image
-
-- inputs:
-    - your train data or use premade example datasets
-        -   Example:
-        -   Example:
-    - sentence(s) you wish to generate images for
-        -   Example:
-- output:
-    -  Image(s)
-        -   Example:
+    data_dir_flpth = os.path.abspath(data_dir_name)
+    print(data_dir_flpth)
 
 
 
+    # 1.  Prepare Filenames
+    # Normalize Names
+    prpFilenames = ptg.filenames.PrepareFilenames(
+                                                  metadata_flpth,
+                                                  image_data_flpth,
+                                                  text_data_flpth,
+                                                  )
 
+    # Write new filenames back to disk using the new filenames and updates the fileNames_df
+    prpFilenames.rename_filenames()
 
-# Current Use Cases
-- Generate random images of birds:
--
-- Generate random images of Live objects
--
+    # Write basenames to a ".txt" file in the metadata folder
+    prpFilenames.basenames_to_txtfile(basename_flname='filenames.txt')
 
-# Limitations
-- Training Models on your own take a long time
-- Lots of Resources
-- Current pretrained are limited
-
-
-
-# TIG Maintainad Algorithms
-### AttnGAN
-
-Pytorch implementation for reproducing AttnGAN results in the paper
 
 **Data**
 

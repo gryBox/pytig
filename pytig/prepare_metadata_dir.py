@@ -40,8 +40,16 @@ class  Metadata(object):
     Notes:
         -  Captions do not have to be lowercase or unpunctuated
         -  It is helpful to normalize hyphenated words carbon-dioxide -> carbon dioxide.
+
+    TODO:Change inputs so only the data dir text dir and imae dir need to be entered.
+        metadata_flpth = os.path.join(data_dir_flpth, metadata_folder_name)
+        print(metadata_flpth)
+
+        text_data_flpth = os.path.join(metadata_flpth, txt_dir_flname)
+        image_data_flpth = os.path.join(metadata_flpth, img_dir_flname)
     """
     def __init__(self, metadata_flpth, image_data_flpth, text_data_flpth, **kwargs):
+
 
         # User Inputs
         self.metadata_flpth = metadata_flpth
