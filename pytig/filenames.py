@@ -13,42 +13,17 @@ logger.setLevel(logging.DEBUG)
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Normalize, split (training, eval), and other filename preperations for the AttnGAN algorithim')
-    parser.add_argument('--cfg', dest='cfg_file',
-                        help='optional config file',
-                        default='cfg/bird_attn2.yml', type=str)
-    parser.add_argument('--metadata_flpth', dest='gpu_id', type=str)
-    parser.add_argument('--data_dir', default='')
-    parser.add_argument('--output_dir', default='')
-    parser.add_argument('--manualSeed', type=int, help='manual seed', default=123)
-    parser.add_argument('--b_validation', type=bool)
-    parser.add_argument('--batch_size', type=int)
-    parser.add_argument('--train_split', type=float)
-    parser.add_argument('--validation_split', type=float)
+    # parser.add_argument('--cfg', dest='cfg_file',
+    #                     help='optional config file',
+    #                     default='cfg/bird_attn2.yml', type=str)
+    parser.add_argument('--metadata_flpth', type=str)
+    parser.add_argument('--image_data_flpth', default='')
+    parser.add_argument('--text_data_flpth', default='')
+    parser.add_argument('--basename_clmn', type=str, default='basename')
+    parser.add_argument('--filepaths_clmn', type=str, default='filepaths')
+    parser.add_argument('--txt_ext', type=str, default='txt' )
+    parser.add_argument('--img_ext', type=str, default='.jpg')
 
-    # Train params
-    parser.add_argument('--predict', action='store_true')
-    parser.add_argument('--max_epoch', type=int)
-    parser.add_argument('--snapshot-interval', type=int)
-    parser.add_argument('--net_g', default='')
-    parser.add_argument('--b_net_d', type=bool)
-    parser.add_argument('--discriminator_lr', type=float)
-    parser.add_argument('--generator_lr', type=float)
-    parser.add_argument('--net_e', default='')
-    parser.add_argument('--gamma1', type=float)
-    parser.add_argument('--gamma2', type=float)
-    parser.add_argument('--gamma3', type=float)
-    parser.add_argument('--lambda', dest='lambda_', type=float)
-
-    # GAN
-    parser.add_argument('--df_dim', type=int)
-    parser.add_argument('--gf_dim', type=int)
-    parser.add_argument('--z_dim', type=int)
-    parser.add_argument('--r_num', type=int)
-
-    # Text arguments
-    parser.add_argument('--embedding_dim', type=int)
-    parser.add_argument('--captions_per_image', type=int)
-    parser.add_argument('--words_num', type=int)
 
     args = parser.parse_args()
     return args
@@ -72,7 +47,7 @@ class PrepareFilenames():
         self.img_dir = os.path.basename(self.image_data_flpth)
 
         self.basenameCol = kwargs.setdefault('basename_clmn', "basename")
-        self.filepathsCol = kwargs.setdefault('filepathsCol', "filepaths")
+        self.filepathsCol = kwargs.setdefault('filepaths_clmn', "filepaths")
 
         # 1. Load file names to df from input directories (with explit extentions)
         txt_ext = kwargs.setdefault('txt_ext', ".txt")

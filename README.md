@@ -31,9 +31,13 @@ with Attentional Generative Adversarial Networks](http://openaccess.thecvf.com/c
     data_dir_flpth = os.path.abspath(data_dir_name)
     print(data_dir_flpth)
 
+    metadata_flpth = os.path.join(data_dir_flpth, metadata_folder_name)
+    print(metadata_flpth)
 
+    text_data_flpth = os.path.join(metadata_flpth, txt_dir_flname)
+    image_data_flpth = os.path.join(metadata_flpth, img_dir_flname)
 
-    # 1.  Prepare Filenames
+#### Prepare Filenames
     # Normalize Names
     prpFilenames = ptg.filenames.PrepareFilenames(
                                                   metadata_flpth,
@@ -46,6 +50,30 @@ with Attentional Generative Adversarial Networks](http://openaccess.thecvf.com/c
 
     # Write basenames to a ".txt" file in the metadata folder
     prpFilenames.basenames_to_txtfile(basename_flname='filenames.txt')
+
+#### Split Data
+    metaFolder = ptg.prepare_metadata_dir.Metadata(
+                                                   metadata_flpth,
+                                                   image_data_flpth,
+                                                   text_data_flpth
+                                                   )
+    train_filenames, test_filenames = metaFolder.split_data(
+                                                            prpFilenames.fileNames_df,
+                                                            test_size=0.3,
+                                                            filenames_clm=prpFilenames.basenameCol)
+#### Analyze Captions
+    # 1. Load text captions to corpus
+    captCrps = ptg.write.txt_to_corpus(text_data_flpth, lang=en, txt_extention=".txt")
+    print(f"\nCorpus Info: {captCrps}")
+
+    # 2. Preview some docs
+    example_doc = 5
+    cap_doc = captCrps[example_doc]
+    print(f"\nNumber of sentences: {cap_doc._.n_sents}")
+    print(f"Text: {cap_doc.text}\n")
+
+display(captCrps.docstats_df.iloc[example_doc].T)
+
 
 
 **Data**
